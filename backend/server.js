@@ -9,6 +9,7 @@ const categoryRoutes = require('./routes/categoryRoutes');
 const reviewRoutes = require('./routes/reviewRoutes');
 const multer = require('multer');
 const fs = require('fs');
+const orderRoutes = require('./routes/orderRoutes');
 
 dotenv.config();
 
@@ -71,6 +72,7 @@ app.use('/api/users', userRoutes);
 app.use('/api/vendors', menuRoutes);
 app.use('/api/vendors', categoryRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {

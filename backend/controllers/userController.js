@@ -255,4 +255,21 @@ const getUserProfile = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { registerUser, loginUser, logoutUser, getUserProfile, upload };
+// @desc    Get all vendors (Admin only)
+// @route   GET /api/users/vendors
+// @access  Private/Admin
+const getAllVendors = asyncHandler(async (req, res) => {
+    try {
+        // Find users with the role 'vendor'
+        // Select fields you want to return - exclude password for security
+        const vendors = await User.find({ role: 'vendor' }).select('-password'); 
+        
+        res.json({ success: true, data: vendors });
+
+    } catch (error) {
+        console.error("Error fetching vendors:", error);
+        res.status(500).json({ success: false, message: "Server Error" });
+    }
+});
+
+module.exports = { registerUser, loginUser, logoutUser, getUserProfile, upload, getAllVendors };

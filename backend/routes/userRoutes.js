@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const { registerUser, loginUser, logoutUser, getUserProfile, upload } = require('../controllers/userController');
-const { protect } = require('../middleware/authMiddleware');
+const { registerUser, loginUser, logoutUser, getUserProfile, upload, getAllVendors } = require('../controllers/userController');
+const { protect, isAdmin } = require('../middleware/authMiddleware');
 
 // @route   POST /api/users/register
 // @desc    Register a new user or vendor
@@ -18,44 +18,14 @@ router.post('/logout', protect, logoutUser);
 router.get('/profile', protect, getUserProfile);
 
 // @route   GET /api/users/vendors
-// @desc    Get all vendors for the homepage
+// @desc    Get all vendors
 // @access  Public
-router.get('/vendors', async (req, res) => {
-  try {
-    const User = require('../models/userModel');
-    
-    console.log("Vendor fetch request received");
-    
-    // Find all users who are vendors - check both role and isVendor fields
-    const vendors = await User.find({
-      $or: [
-        { role: 'vendor' }, 
-        { isVendor: true }
-      ]
-    }).select('username email vendorDetails');
-    
-    console.log(`Found ${vendors.length} vendors in database`);
-    vendors.forEach((vendor, index) => {
-      console.log(`Vendor ${index + 1}: ${vendor.username}, Restaurant: ${vendor.vendorDetails?.restaurantName || 'N/A'}`);
-    });
-      
-    res.json({
-      success: true,
-      count: vendors.length,
-      data: vendors
-    });
-  } catch (error) {
-    console.error('Error fetching vendors:', error);
-    res.status(500).json({
-      success: false,
-      error: 'Server Error'
-    });
-  }
-});
+router.route('/vendors').get(getAllVendors);
 
 // @route   GET /api/users/vendors/:id
-// @desc    Get a single vendor by ID
-// @access  Public
+// @desc    Get a single vendor by ID (Keep Public for now? Or protect?)
+// @access  Public 
+// This route can remain public if needed for displaying vendor details to users
 router.get('/vendors/:id', async (req, res) => {
   try {
     const User = require('../models/userModel');

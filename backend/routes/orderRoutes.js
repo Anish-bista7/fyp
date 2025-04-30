@@ -1,5 +1,5 @@
 const express = require('express');
-const { createOrder } = require('../controllers/orderController');
+const { createOrder, getMyOrders } = require('../controllers/orderController');
 const { protect } = require('../middleware/authMiddleware'); // Middleware to protect routes
 
 const router = express.Router();
@@ -8,6 +8,9 @@ const router = express.Router();
 // Protect middleware ensures only logged-in users can create orders
 router.route('/').post(protect, createOrder);
 
-// TODO: Add other routes as needed (e.g., GET /api/orders/myorders, GET /api/orders/:id)
+// GET /api/orders/myorders - Get logged in user's orders
+router.route('/myorders').get(protect, getMyOrders);
+
+// TODO: Add other routes as needed (e.g., GET /api/orders/:id)
 
 module.exports = router; 
